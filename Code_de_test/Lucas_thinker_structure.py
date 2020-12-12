@@ -60,6 +60,7 @@ class testbolo:
         print(self.mot)
         time.sleep(1)
         # lecture(pwr)
+        #test
 
 
 ##################################################################################
