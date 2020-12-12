@@ -21,7 +21,7 @@ def connexion():
         print('erreur milliwattmètre')
         pass
 
-def lecture():
+    def run(self):
     try:
         pwr = rm.open_resource(Adr_PWR.get())
         pwr.write("MEAS1:SCAL:POW:AC?")
