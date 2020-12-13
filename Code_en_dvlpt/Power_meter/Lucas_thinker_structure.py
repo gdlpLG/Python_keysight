@@ -4,7 +4,7 @@ import tkinter.font as tkFont
 import pyvisa
 import time
 import sys
-from threading import Thread, RLock
+import threading
 
 rm = pyvisa.ResourceManager()
 
@@ -14,53 +14,57 @@ fenetre = Tk()
 status_PWR = StringVar()
 status_SA = StringVar()
 PwrMeas = StringVar()
+pwr = StringVar()
 
 Label_Status_PWR = Label
 Label_Status_PWR = Label
-
-Stop = False
-Test = 0
+Adr_PWR = Entry
+status = True
 
 
 def connexion():
-    global Label_Status_PWR, status_PWR, color_validation
-
+    global pwr
     # Statut connexion milliwattmètre
     try:
         pwr = rm.open_resource(Adr_PWR.get())
         pwr.write("*CLS")
         print(pwr.query("*IDN?"))
         status_PWR.set('Connecté')
-        Label_Status_PWR.config(fenetre, bg='green')
+        Label_Status_PWR.config(bg='green')
         pwr.clear()
         pwr.close()
     except:
-        status_PWR.set('Non connecté!')
-
+        status_PWR.set('Non connecté !')
         Label_Status_PWR.config(bg='red')
         print('erreur milliwattmètre')
         pass
 
 
-def StopBtn():
-    global Stop
-    Stop = True
+def start_thread():
+    global status
+    threads = []
+    t1 = threading.Thread(target=start)
+    threads.append(t1)
+    t1.start()
+    status = True
 
 
-class testbolo:
+def start():
+    global status
+    try:
+        while status:
+            pwr.write("MEAS1:SCAL:POW:AC?")
+            # print(pwr.read())
+            PwrMeas.set(pwr.read())
+            time.sleep(0.5)
+    except:
+        print('erreur commande')
+        pass
 
-    def __init__(self):
-        self.mot = 1
-        print(self.mot)
 
-    def lecturetempsreel(self):
-        global Stop
-        global Test
-        self.mot = self.mot + 1
-        print(self.mot)
-        time.sleep(1)
-        # lecture(pwr)
-        #test
+def stop():
+    global status
+    status = False
 
 
 ##################################################################################
@@ -84,9 +88,17 @@ class Interface(Frame):
         # Allocation des fenetres GUI
         frame1 = LabelFrame(fenetre, text='Instruments')
         frame1.pack()
-        frame2 = LabelFrame(fenetre, text='Mesure')
-        frame2.pack()
-        frame3 = frame3 = Frame(self, width=550, height=80, bg='')
+        frame21 = Frame(fenetre, width=40, height=10, bg="gainsboro")
+        frame21.pack(fill=BOTH)
+        frame2 = LabelFrame(frame21, text='Mesure', bg="")
+        frame_deco = Frame(frame21, width=80, height=10, bg="silver")
+        frame_deco.grid(row=0, column=0, padx=10, pady=10)
+        frame2.grid(row=0, column=1, padx=10, pady=10)
+        frame4 = LabelFrame(frame21, text='Paramètre')
+        frame4.grid(row=0, column=2, padx=10, pady=10)
+
+        bottom = Frame(fenetre, height=1)
+        bottom.pack(side="bottom")
 
         # police
         font1 = tkFont.Font(family='OCR A Extended', size=36)
@@ -96,7 +108,8 @@ class Interface(Frame):
             PwrMeas, \
             status_SA, \
             color_validation, \
-            Label_Status_PWR
+            Label_Status_PWR, \
+            Adr_PWR
 
         # initilisation des variables
         status_PWR.set('Non connecté')
@@ -120,15 +133,36 @@ class Interface(Frame):
         Label_Val.grid(row=0, column=0, columnspan=1)
         Label_Unite = Label(frame2, text='dBm', font=font1)
         Label_Unite.grid(row=0, column=1, columnspan=1)
-        Btn_mesure_continue = Button(frame2, text="Mesure", width=10, command=testbolo)
+        Btn_mesure_continue = Button(frame2, text="Mesure", width=10, command=start_thread)
         Btn_mesure_continue.grid(row=1, column=0, columnspan=1)
-        Btn_mesure_stop = Button(frame2, text="Mesure", width=10, command=StopBtn)
+        Btn_mesure_stop = Button(frame2, text="stop", width=10, command=stop)
         Btn_mesure_stop.grid(row=1, column=1, columnspan=1)
+
+        Adr_freq = Entry(frame4, width=10)
+        Adr_freq.grid(row=0, column=4)
+        Label_freq = Label(frame4, text="GHz",)  # affiche la mesure en dBm lue
+        Label_freq.grid(row=0, column=0, padx=5)
+        Btn_freq = Button(frame4, text="Frequence", width=10, command="")
+        Btn_freq.grid(row=0, column=5, columnspan=1)
+
+        Adr_Offset = Entry(frame4, width=10)
+        Adr_Offset.grid(row=1, column=4, padx=10, pady=10)
+        Adr_Offset = Label(frame4, text="dB", )  # affiche la mesure en dBm lue
+        Adr_Offset.grid(row=1, column=0, padx=5)
+        Btn_Offset = Button(frame4, text="Offset", width=10, command="")
+        Btn_Offset.grid(row=1, column=5, columnspan=1)
+
+        Adr_cal = Entry(frame4, width=10)
+        Adr_cal.grid(row=2, column=4, columnspan=1)
+        Btn_calzero = Button(frame4, text="Calibration", width=10, command="")
+        Btn_calzero.grid(row=2, column=5, columnspan=1)
+
+
+
         # frame 3
+        bouton_quitter = Button(bottom, text="Quitter", command=self.quit)
+        bouton_quitter.pack(side="bottom")
 
-        # self.bouton_quitter = Button(self, text="Quitter", command=self.quit)
-        # self.bouton_quitter.pack(side="bottom")
 
-
-interface = Interface(fenetre)
-interface.mainloop()
+window = Interface(fenetre)
+window.mainloop()
