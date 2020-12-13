@@ -76,7 +76,8 @@ def stop():
     global status
     status = False
 
-#envoi à l'instrument la fréquence mesuré
+
+# envoi à l'instrument la fréquence mesuré
 def freq_cal():
     global pwr
     Merge_GHz = float(Adr_freq.get()) * pow(10, 9)  # 10^9
@@ -84,15 +85,17 @@ def freq_cal():
     pwr.write("SENSe1:FREQuency:CW:FIXed ", Merge_GHz)  # commande non essayer
     print(pwr.qery("[SENSe1:FREQuency:CW:FIXed]?"))  # récupère la valeur freq_cal de l'appareil
 
-#ajoute un offset sur l'instrument
+
+# ajoute un offset sur l'instrument
 def offset():
     global pwr
     # Adr_Offset = 40
     print("Ajout de l'offset", Adr_Offset.get())
-    pwr.write("SENSe1:CORRection:GAIN2:INPut:MAGNitude ", Adr_Offset)  # commande non essayer
+    pwr.write("SENSe1:CORRection:GAIN2:INPut:MAGNitude ", Adr_Offset.get())  # commande non essayer
     print(pwr.qery("CORR:GAIN2?"))  # récupère la valeur de l'offset de l'appareil
 
-#fait une calibration sur l'instrument
+
+# fait une calibration sur l'instrument
 def calibration():
     global pwr
     if askquestion("Calibration", "Avez-vous brancher la sonde sur le port de calibration"):
@@ -101,13 +104,24 @@ def calibration():
         pwr.write("CAL1:ALL?")
     print(pwr.qery("CAL1:ALL?"))
 
+
 def ref_on():
     global pwr
     pwr.write("OUTPut:ROSCillator:STATe 1")
 
+
 def ref_off():
     global pwr
     pwr.write("OUTPut:ROSCillator:STATe 0")
+
+
+# permet de retourner la valeur lu sur l'instrument
+def mesure_bolo():
+    global pwr
+    pwr1 = 3
+    return pwr1
+    return pwr.read("MEAS1:SCAL:POW:AC?")
+
 
 ##################################################################################
 # Classe définissant l'objet représentant la fenêtre principale de l'application
@@ -202,7 +216,8 @@ class Interface(Frame):
         Btn_Offset = Button(frame22, text="Offset", width=10, command=offset)  # envoi de l'information au bolo
         Btn_Offset.grid(row=1, column=5, columnspan=1)
 
-        Btn_calzero = Button(frame22, text="Calibration + zéro", width=14, command=calibration)  # faire une calibration + zéro
+        Btn_calzero = Button(frame22, text="Calibration + zéro", width=14,
+                             command=calibration)  # faire une calibration + zéro
         Btn_calzero.grid(row=2, column=4, columnspan=1)
         Btn_ref_on = Button(frame22, text="REF on", command=ref_on)  # faire une calibration + zéro
         Btn_ref_on.grid(row=3, column=4)
