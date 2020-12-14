@@ -61,12 +61,13 @@ def start_thread():
 def start():
     global status
     global pwr
+    pwr = rm.open_resource(Adr_PWR.get())
     # count = 0
     while status:  # si pas d'appui sur le bouton STOP, lecture est en cours
         # count += 1
         # print(count)
         pwr.write("MEAS1:SCAL:POW:AC?")
-        print(pwr.read())
+        #print(pwr.read())
         PwrMeas.set(pwr.read())
         time.sleep(0.5)  # lis la valeur toute les 0.5s
 
@@ -80,19 +81,22 @@ def stop():
 # envoi à l'instrument la fréquence mesuré
 def freq_cal():
     global pwr
+    pwr = rm.open_resource(Adr_PWR.get())
+
     Merge_GHz = float(Adr_freq.get()) * pow(10, 9)  # 10^9
-    print("Ajout de freq_cal", Merge_GHz)
-    pwr.write("SENSe1:FREQuency:CW:FIXed ", Merge_GHz)  # commande non essayer
-    print(pwr.qery("[SENSe1:FREQuency:CW:FIXed]?"))  # récupère la valeur freq_cal de l'appareil
+    print("Ajout de freq_cal" + str(Merge_GHz))
+    pwr.write("SENSe1:FREQuency:CW:FIXed " + str(Merge_GHz))  # commande non essayer
+    print(pwr.query("[SENSe1:FREQuency:CW:FIXed]?"))  # récupère la valeur freq_cal de l'appareil
 
 
 # ajoute un offset sur l'instrument
 def offset():
     global pwr
+    pwr = rm.open_resource(Adr_PWR.get())
     # Adr_Offset = 40
     print("Ajout de l'offset", Adr_Offset.get())
     pwr.write("SENSe1:CORRection:GAIN2:INPut:MAGNitude ", Adr_Offset.get())  # commande non essayer
-    print(pwr.qery("CORR:GAIN2?"))  # récupère la valeur de l'offset de l'appareil
+    print(pwr.query("CORR:GAIN2?"))  # récupère la valeur de l'offset de l'appareil
 
 
 # fait une calibration sur l'instrument
@@ -139,7 +143,7 @@ class Interface(Frame):
         fenetre.title("Milliwattmètre N1913A !")  # Le titre de la fenêtre
         fenetre.iconbitmap("logoACTIA.ico")  # ajout de l'icone Actia en
         fenetre.geometry("600x400")  # You want the size of the app to be 500x500
-        fenetre.resizable(0, 0)  # Don't allow resizing in the x or y direction
+        fenetre.resizable(1, 1)  # Don't allow resizing in the x or y direction
 
         # Allocation des fenetres GUI
         frame1 = LabelFrame(fenetre, text='Instruments')  # reserver à la connexion des intruments
