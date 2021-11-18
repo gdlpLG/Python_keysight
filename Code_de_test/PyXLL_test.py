@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 import itertools
 
 # dir = ('C:/Users/Cl3ment/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
-dir = ('D:/APM40KA/Sans_combineur/')
+dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Sans_combineur/')
+# dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Equilibrage G/')
+# dir = ('D:/APM40KA/Sans_combineur/')
 
 marker = itertools.cycle(('x', 'P', 'd', 'o', '*','^','v','s','<','>'))
 
@@ -36,6 +38,7 @@ for f in os.listdir(dir):
 
 plt.xlim(x.min()[0], x.max()[0])        # Limite de l'axe X
 plt.xticks(np.arange(x.min()[0], x.max()[0]+1, 500e6))      # Echelle de l'axe X
+# plt.yticks(np.arange(0, 25, 2.5))      # Echelle de l'axe Y
 plt.tight_layout()      # Echelle de la fenêtre
 plt.show()
 
