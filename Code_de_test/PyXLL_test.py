@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 import itertools
 
 # dir = ('C:/Users/Cl3ment/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
-dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Sans_combineur/')
+# dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Sans_combineur/')
 # dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Equilibrage G/')
-# dir = ('D:/APM40KA/Sans_combineur/')
+dir = ('D:/APM40KA/Sans_combineur_v2/')
 
 marker = itertools.cycle(('x', 'P', 'd', 'o', '*', '^', 'v', 's', '<', '>'))
 
@@ -31,6 +31,7 @@ for f in os.listdir(dir):
             # name = name_0 + '_v%s' % j
             data = df.iloc[start[j] + 2:stop[j], :]
             x = data[0].replace('.', ',').astype(float)
+            # Faire une boucle pour indexer tous les y de 1 to i
             y = data[1].replace('.', ',').astype(float) # à améliorer pour prendre en compte [y] colonne et pas uniquement la [1].
 
             # Afficher dans le graphe
