@@ -4,8 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import itertools
 
-dir = ('C:/Users/Cl3ment/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
-# dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Sans_combineur/')
+# dir = ('C:/Users/Cl3ment/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
+dir = ('C:/Users/cl.mallet/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
+# dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Sans_combineur_v2/')
 # dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Equilibrage G/')
 # dir = ('D:/APM40KA/Sans_combineur_v2/')
 
@@ -31,6 +32,8 @@ for f in os.listdir(dir):
 
 marker = itertools.cycle(('x', 'P', 'd', 'o', '*', '^', 'v', 's', '<', '>'))
 lin = 2
+
+# Configuration de la figure
 if col == 2:
     fig, axs = plt.subplots(lin)
 else:
@@ -93,6 +96,7 @@ for f in os.listdir(dir):
                     AX.plot(x, y, label=name, marker=next(marker), markevery=40, linewidth=1.5)        # Légende
                     AX.autoscale(enable=True, axis="x", tight=True)
                     # AX.legend(bbox_to_anchor=(1.05, 1), loc='upper left',borderaxespad=0.)  # Position de la légende
+
     else:
         continue
 
