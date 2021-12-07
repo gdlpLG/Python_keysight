@@ -5,9 +5,10 @@ import matplotlib.pyplot as plt
 import itertools
 
 # dir = ('C:/Users/Cl3ment/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
-dir = ('C:/Users/cl.mallet/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
+# dir = ('C:/Users/cl.mallet/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
 # dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Sans_combineur_v2/')
 # dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Equilibrage G/')
+dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Avec_combineur/')
 # dir = ('D:/APM40KA/Sans_combineur_v2/')
 
 # Boucle pour connaitre le nombre de colonne 'col' / à améliorer
@@ -34,8 +35,9 @@ marker = itertools.cycle(('x', 'P', 'd', 'o', '*', '^', 'v', 's', '<', '>'))
 lin = 2
 
 # Configuration de la figure
-if col == 2:
+if col <= 2:
     fig, axs = plt.subplots(lin)
+    # fig, axs = plt.subplots()
 else:
     fig, axs = plt.subplots(lin, int(col/lin))
 
@@ -56,29 +58,36 @@ for f in os.listdir(dir):
         for j in range(len(start)): # Analyse du fichier par canal j
 
             name = name_0
-            name_1 = name_0 + '_CH_%s' % (j+1)
+            # name_1 = name_0 + '_CH_%s' % (j+1)
             data = df.iloc[start[j] + 2:stop[j], :]
             x = data[0].replace('.', ',').astype(float)
 
             for i in range(1,len(data.columns)):        # Analyse du fichier par trace i
 
-                y = data[i].replace('.', ',').astype(float) # ?
-                name = name_1 + '_TR_%s' % i
+                y = data[i].replace('.', ',').replace('', np.nan).astype(float) # ?
+                # name = name_1 + '_TR_%s' % i
 
                 # Pour 1 paramètre mesuré - Graphe 1D
-                if col == 2:
+                if col <= 2:
                     AX = axs[n]
+                    # AX = axs
 
                     if n % 2 == 0:
-                        AX.set(xlabel='Fréquence [Hz]', ylabel='Gain [dB]')
+                        y = y + 40.4775  # Offset moyen du coupleur
+                        # AX.set(xlabel='Fréquence [Hz]', ylabel='Gain [dB]')
+                        AX.set(xlabel='Fréquence [MHz]', ylabel='Gain [dB]', xlim=(29500, 31000), ylim=(17, 24),
+                               xticks=np.arange(29500, 31500, step=500), yticks=np.arange(17, 25, step=1))
                     else:
-                        AX.set(xlabel='Fréquence [Hz]', ylabel='Déphasage [°]')
+                        # AX.set(xlabel='Fréquence [Hz]', ylabel='Déphasage [°]')
+                        AX.set(xlabel='Fréquence [MHz]', ylabel='Déphasage [°]', xlim=(30000, 31000), ylim=(-200, -80),
+                               xticks=np.arange(30000, 31500, step=500), yticks=np.arange(-200, -70, step=20))
 
                     n += 1
-                    AX.grid(linestyle=':')
-                    AX.set_title('%s' % n)
-                    AX.plot(x, y, label=name, marker=next(marker), markevery=40, linewidth=1.5)  # Légende
-                    AX.autoscale(enable=True, axis="x", tight=True)
+                    AX.grid(visible=True,linestyle=':')
+                    # AX.set_title('%s' % n)
+                    # AX.set_title('Avec combineur')
+                    AX.plot(x, y, label=name, marker=next(marker), markevery=10, linewidth=1.5)  # Légende
+                    # AX.autoscale(enable=True, axis="x", tight=True)
                     AX.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)  # Position de la légende
 
                 # Pour plusieurs paramètres mesurés - Graphe 2D
@@ -91,7 +100,7 @@ for f in os.listdir(dir):
                         AX.set(xlabel='Fréquence [Hz]', ylabel='Déphasage [°]')
 
                     n += 1
-                    AX.grid(linestyle=':')
+                    AX.grid(visible=True,linestyle=':')
                     AX.set_title('%s' % n)
                     AX.plot(x, y, label=name, marker=next(marker), markevery=40, linewidth=1.5)        # Légende
                     AX.autoscale(enable=True, axis="x", tight=True)
@@ -100,6 +109,6 @@ for f in os.listdir(dir):
     else:
         continue
 
-fig.suptitle('TITRE FIGURE')      # Titre du graphique
+fig.suptitle('APM40KA #4')      # Titre du graphique
 plt.tight_layout()      # Echelle de la fenêtre
 plt.show()
