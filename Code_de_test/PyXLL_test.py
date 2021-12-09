@@ -3,13 +3,16 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
+from matplotlib.ticker import AutoMinorLocator
 
 # dir = ('C:/Users/Cl3ment/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
 # dir = ('C:/Users/cl.mallet/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
+# dir = ('D:/APM40KA/Sans_combineur_v2/')
 # dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Sans_combineur_v2/')
 # dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Equilibrage G/')
-dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Avec_combineur/')
-# dir = ('D:/APM40KA/Sans_combineur_v2/')
+# dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Avec_combineur/')
+# dir = ('D:/APM40KA/Avec_combineur/')
+dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Avec_combineur_v2/')
 
 # Boucle pour connaitre le nombre de colonne 'col' / à améliorer
 for f in os.listdir(dir):
@@ -75,15 +78,19 @@ for f in os.listdir(dir):
                     if n % 2 == 0:
                         y = y + 40.4775  # Offset moyen du coupleur
                         # AX.set(xlabel='Fréquence [Hz]', ylabel='Gain [dB]')
-                        AX.set(xlabel='Fréquence [MHz]', ylabel='Gain [dB]', xlim=(29500, 31000), ylim=(17, 24),
-                               xticks=np.arange(29500, 31500, step=500), yticks=np.arange(17, 25, step=1))
+                        AX.set(xlabel='Fréquence [GHz]', ylabel='Gain [dB]', xlim=(29.5e9, 31e9), ylim=(9, 23),
+                               xticks=np.arange(29.5e9, 31.5e9, step=500e6), yticks=np.arange(9, 24, step=2))
+                        AX.xaxis.set_minor_locator(AutoMinorLocator(5))
+                        AX.yaxis.set_minor_locator(AutoMinorLocator(2))
                     else:
                         # AX.set(xlabel='Fréquence [Hz]', ylabel='Déphasage [°]')
-                        AX.set(xlabel='Fréquence [MHz]', ylabel='Déphasage [°]', xlim=(30000, 31000), ylim=(-200, -80),
-                               xticks=np.arange(30000, 31500, step=500), yticks=np.arange(-200, -70, step=20))
+                        AX.set(xlabel='Fréquence [GHz]', ylabel='Déphasage [°]', xlim=(29.5e9, 31e9), ylim=(80, 180),
+                               xticks=np.arange(29.5e9, 31.5e9, step=500e6), yticks=np.arange(80, 200, step=20))
+                        AX.xaxis.set_minor_locator(AutoMinorLocator(5))
+                        AX.yaxis.set_minor_locator(AutoMinorLocator(2))
 
                     n += 1
-                    AX.grid(visible=True,linestyle=':')
+                    AX.grid(visible=True, which='major', linestyle=':')
                     # AX.set_title('%s' % n)
                     # AX.set_title('Avec combineur')
                     AX.plot(x, y, label=name, marker=next(marker), markevery=10, linewidth=1.5)  # Légende
@@ -109,6 +116,6 @@ for f in os.listdir(dir):
     else:
         continue
 
-fig.suptitle('APM40KA #4')      # Titre du graphique
+fig.suptitle('APM40KA #4 - 09/12/2021')      # Titre du graphique
 plt.tight_layout()      # Echelle de la fenêtre
 plt.show()
