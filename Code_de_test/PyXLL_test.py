@@ -4,15 +4,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import itertools
 from matplotlib.ticker import AutoMinorLocator
+import datetime
 
 # dir = ('C:/Users/Cl3ment/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
 # dir = ('C:/Users/cl.mallet/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
-# dir = ('D:/APM40KA/Sans_combineur_v2/')
-# dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Sans_combineur_v2/')
-# dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Equilibrage G/')
-# dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Avec_combineur/')
-# dir = ('D:/APM40KA/Avec_combineur/')
-dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Avec_combineur_v2/')
+# dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Avec_combineur_v4/')
+dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/ROS ON 2/')
+# dir = ('D:/APM40KA/ROS ON 2/')
+
+# Retourner la date du PC
+date = datetime.datetime.now()
+jrd = date.strftime('%d/%m/%Y')
 
 # Boucle pour connaitre le nombre de colonne 'col' / à améliorer
 for f in os.listdir(dir):
@@ -58,7 +60,8 @@ for f in os.listdir(dir):
         start = df[['BEGIN' in x for x in df[0]]].index.values      # Marque l'index du DEBUT de chaque plage de donnée
         stop = df[['END' in x for x in df[0]]].index.values     # Marque l'index de la FIN de chaque plage de donnée
 
-        for j in range(len(start)): # Analyse du fichier par canal j
+        # for j in range(len(start)): # Analyse du fichier par canal j
+        for j in range(1,2): # Analyse du fichier par canal j
 
             name = name_0
             # name_1 = name_0 + '_CH_%s' % (j+1)
@@ -66,6 +69,7 @@ for f in os.listdir(dir):
             x = data[0].replace('.', ',').astype(float)
 
             for i in range(1,len(data.columns)):        # Analyse du fichier par trace i
+            # for i in range(1,2):        # Analyse du fichier par trace i
 
                 y = data[i].replace('.', ',').replace('', np.nan).astype(float) # ?
                 # name = name_1 + '_TR_%s' % i
@@ -76,16 +80,18 @@ for f in os.listdir(dir):
                     # AX = axs
 
                     if n % 2 == 0:
-                        y = y + 40.4775  # Offset moyen du coupleur
-                        # AX.set(xlabel='Fréquence [Hz]', ylabel='Gain [dB]')
-                        AX.set(xlabel='Fréquence [GHz]', ylabel='Gain [dB]', xlim=(29.5e9, 31e9), ylim=(9, 23),
-                               xticks=np.arange(29.5e9, 31.5e9, step=500e6), yticks=np.arange(9, 24, step=2))
+                        # y = y + 40.4775  # Offset moyen du coupleur
+                        AX.set(xlabel='Fréquence [Hz]', ylabel='ROS [dB]')
+                        AX.autoscale(enable=True, axis="x", tight=True)
+                        # AX.set(xlabel='Fréquence [GHz]', ylabel='Gain [dB]', xlim=(29.5e9, 31e9), ylim=(9, 23),
+                        #        xticks=np.arange(29.5e9, 31.5e9, step=500e6), yticks=np.arange(9, 24, step=2))
                         AX.xaxis.set_minor_locator(AutoMinorLocator(5))
                         AX.yaxis.set_minor_locator(AutoMinorLocator(2))
                     else:
-                        # AX.set(xlabel='Fréquence [Hz]', ylabel='Déphasage [°]')
-                        AX.set(xlabel='Fréquence [GHz]', ylabel='Déphasage [°]', xlim=(29.5e9, 31e9), ylim=(80, 180),
-                               xticks=np.arange(29.5e9, 31.5e9, step=500e6), yticks=np.arange(80, 200, step=20))
+                        AX.set(xlabel='Fréquence [Hz]', ylabel='Déphasage [°]')
+                        AX.autoscale(enable=True, axis="x", tight=True)
+                        # AX.set(xlabel='Fréquence [GHz]', ylabel='Déphasage [°]', xlim=(29.5e9, 31e9), ylim=(30, 100),
+                        #        xticks=np.arange(29.5e9, 31.5e9, step=500e6), yticks=np.arange(30, 110, step=10))
                         AX.xaxis.set_minor_locator(AutoMinorLocator(5))
                         AX.yaxis.set_minor_locator(AutoMinorLocator(2))
 
@@ -93,7 +99,7 @@ for f in os.listdir(dir):
                     AX.grid(visible=True, which='major', linestyle=':')
                     # AX.set_title('%s' % n)
                     # AX.set_title('Avec combineur')
-                    AX.plot(x, y, label=name, marker=next(marker), markevery=10, linewidth=1.5)  # Légende
+                    AX.plot(x, y, label=name, marker=next(marker), markevery=20, linewidth=1.5)  # Légende
                     # AX.autoscale(enable=True, axis="x", tight=True)
                     AX.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)  # Position de la légende
 
@@ -116,6 +122,6 @@ for f in os.listdir(dir):
     else:
         continue
 
-fig.suptitle('APM40KA #4 - 09/12/2021')      # Titre du graphique
+fig.suptitle('APM40KA #4 - %s' % jrd)      # Titre du graphique
 plt.tight_layout()      # Echelle de la fenêtre
 plt.show()
