@@ -8,7 +8,8 @@ from matplotlib.ticker import AutoMinorLocator
 # dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Sans_combineur_v2/Pwr PA/')
 # dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Sans_combineur_v2/Pwr Preamp/')
 # dir = ('C:/Users/cl.mallet/Documents/ASH40KA-B4-S/ASH40KA - Dépannage Module de puissance/Avec_combineur_v4/Pwr APM40KA #4/')
-dir = ('D:/LINEARISEUR_KA/BIAS TEE/')
+# dir = ('D:/LINEARISEUR_KA/BIAS TEE/')
+dir = ('C:/Users/Cl3ment/Dropbox/MACRO Excel/Macro Extraction CSV/AAA DIODE/')
 
 marker = itertools.cycle(('x', 'P', 'd', 'o', '*', '^', 'v', 's', '<', '>'))
 
